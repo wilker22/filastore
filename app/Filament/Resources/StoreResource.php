@@ -23,11 +23,14 @@ class StoreResource extends Resource
     {
         return $form->columns(1)
             ->schema([
-                Forms\Components\TextInput::make('name'),
-                Forms\Components\TextInput::make('phone'),
-                Forms\Components\RichEditor::make('about'),
-                Forms\Components\TextInput::make('logo'),
-                Forms\Components\TextInput::make('slug'),
+                Forms\Components\TextInput::make('name')->required(),
+                Forms\Components\TextInput::make('phone')->required(),
+                Forms\Components\RichEditor::make('about')->required(),
+                Forms\Components\FileUpload::make('logo')
+                                    ->directory('stores')
+                                    ->disk('public')
+                                    ->image(),
+                Forms\Components\TextInput::make('slug')->required(),
             ]);
     }
 
