@@ -19,10 +19,7 @@ class EditProduct extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        $data['price'] = number_format(
-            $data['price'] / 100,
-            2, ',','.'
-        );
+        $data['price'] = number_format($data['price'], 2, ',','.');
 
         return $data;
     }

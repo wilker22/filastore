@@ -8,6 +8,7 @@ use App\Models\Product;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -23,13 +24,28 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-briefcase';
+
+    protected static ?string $recordTitleAttribute = 'name';
+    
+    protected static ?string $navigationGroup = 'Admin';
+
+    protected static ?string $navigationLabel = 'Produtos';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
         return $form->columns(1)
             ->schema([
-                TextInput::make('name')->required(),
+                TextInput::make('name')
+                        ->reactive()
+                                ->afterStateUpdated(function($state, $set){
+                                    $state = str()->of($state)->slug();
+                                    $set('slug', $state);
+                                })
+                        ->debounce(600)
+                        ->required(),
                 Select::make('store_id')
                         ->relationship(
                             'store', 'name',
@@ -44,10 +60,14 @@ class ProductResource extends Resource
 
                         TextInput::make('description'),
                         RichEditor::make('body')->required(),
-                        TextInput::make('price')->required(),
-                        Toggle::make('status')->required(),
-                        TextInput::make('stock')->required(),
-                        TextInput::make('slug')->required(),
+                        Section::make('Dados Complementares')->columns(2)->schema([
+                            TextInput::make('price')->required(),
+                            Toggle::make('status')->required(),
+                            TextInput::make('stock')->required(),
+                            TextInput::make('slug')
+                                        ->disabled()  
+                                        ->required(),
+                        ]),
             ]);
     }
 
@@ -89,5 +109,10 @@ class ProductResource extends Resource
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return self::getModel()::count();
     }
 }

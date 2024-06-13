@@ -17,20 +17,37 @@ class StoreResource extends Resource
 {
     protected static ?string $model = Store::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    protected static ?string $navigationGroup = 'Admin';
+
+    protected static ?string $navigationLabel = 'Lojas';
+    
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form->columns(1)
             ->schema([
-                Forms\Components\TextInput::make('name')->required(),
+                Forms\Components\TextInput::make('name')
+                        ->reactive()
+                        ->afterStateUpdated(function($state, $set){
+                            $state = str()->of($state)->slug();
+                            $set('slug', $state);
+                        })
+                        ->debounce(600)
+                        ->required(),
                 Forms\Components\TextInput::make('phone')->required(),
                 Forms\Components\RichEditor::make('about')->required(),
                 Forms\Components\FileUpload::make('logo')
                                     ->directory('stores')
                                     ->disk('public')
                                     ->image(),
-                Forms\Components\TextInput::make('slug')->required(),
+                Forms\Components\TextInput::make('slug')
+                        ->disabled()    
+                        ->required(),
             ]);
     }
 
@@ -76,5 +93,10 @@ class StoreResource extends Resource
             'create' => Pages\CreateStore::route('/create'),
             'edit' => Pages\EditStore::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return self::getModel()::count();
     }
 }
