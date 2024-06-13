@@ -7,6 +7,7 @@ use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Filament\Facades\Filament;
 use Filament\Forms;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -38,36 +39,55 @@ class ProductResource extends Resource
     {
         return $form->columns(1)
             ->schema([
-                TextInput::make('name')
-                        ->reactive()
-                                ->afterStateUpdated(function($state, $set){
-                                    $state = str()->of($state)->slug();
-                                    $set('slug', $state);
-                                })
-                        ->debounce(600)
-                        ->required(),
-                Select::make('store_id')
-                        ->relationship(
-                            'store', 'name',
-                            fn(Builder $query) => 
-                            $query->whereRelation(
-                                'tenant', 
-                                'tenant_id',
-                                '=',
-                                Filament::getTenant()->id
-                                )
-                        ),
+                Forms\Components\Fieldset::make('Dados')->schema([
+                    TextInput::make('name')
+                    ->reactive()
+                            ->afterStateUpdated(function($state, Forms\Set $set){
+                                $state = str()->of($state)->slug();
+                                $set('slug', $state);
+                            })
+                    ->debounce(600)
+                    ->required(),
+            Select::make('store_id')
+                    ->relationship(
+                        'store', 'name',
+                        fn(Builder $query) => 
+                        $query->whereRelation(
+                            'tenant', 
+                            'tenant_id',
+                            '=',
+                            Filament::getTenant()->id
+                            )
+                    ),
 
-                        TextInput::make('description'),
-                        RichEditor::make('body')->required(),
-                        Section::make('Dados Complementares')->columns(2)->schema([
-                            TextInput::make('price')->required(),
-                            Toggle::make('status')->required(),
-                            TextInput::make('stock')->required(),
-                            TextInput::make('slug')
-                                        ->disabled()  
-                                        ->required(),
-                        ]),
+                    TextInput::make('description'),
+                    RichEditor::make('body')->required(),
+                    
+                    //seção para divisão do form
+                    Section::make('Dados Complementares')->columns(2)->schema([
+                        TextInput::make('price')->required(),
+                        Toggle::make('status')->required(),
+                        TextInput::make('stock')->required(),
+                        TextInput::make('slug')                                         
+                                    ->required(),
+                        Select::make('categories')
+                                ->multiple()
+                                ->relationship(
+                                    'categories', 'name',
+                                    fn(Builder $query, Forms\Get $get) => $query->whereRelation(
+                                        'tenant', 
+                                        'tenant_id',
+                                        '=',
+                                        Filament::getTenant()->id
+                                        )->whereRelation(
+                                            'store',
+                                            'store_id',
+                                            '=',
+                                            $get('store_id')
+                                        )
+                                ),
+                    ]),
+                ])
             ]);
     }
 

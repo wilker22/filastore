@@ -45,9 +45,7 @@ class StoreResource extends Resource
                                     ->directory('stores')
                                     ->disk('public')
                                     ->image(),
-                Forms\Components\TextInput::make('slug')
-                        ->disabled()    
-                        ->required(),
+                Forms\Components\TextInput::make('slug')->required(),
             ]);
     }
 
