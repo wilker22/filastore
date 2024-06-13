@@ -5,10 +5,14 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
+use Filament\Facades\Filament;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -21,9 +25,20 @@ class ProductResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
+        return $form->columns(1)
             ->schema([
-                //
+                TextInput::make('name')->required(),
+                Select::make('store_id')
+                        ->relationship(
+                            'store', 'name',
+                            fn(Builder $query) => 
+                            $query->whereRelation(
+                                'tenant', 
+                                'tenant_id',
+                                '=',
+                                Filament::getTenant()->id
+                                )
+                        ),
             ]);
     }
 
@@ -31,7 +46,10 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('id'),
+                TextColumn::make('name')
+                        ->searchable()
+                        ->label('Produto')
             ])
             ->filters([
                 //

@@ -11,15 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('stores', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('logo')->nullable();
-            $table->string('slug');
-            $table->text('about');
-            $table->string('phone');
+        Schema::table('stores', function (Blueprint $table) {
+            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
 
-            $table->timestamps();
         });
     }
 
@@ -28,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('stores');
+        Schema::table('stores', function (Blueprint $table) {
+            //
+        });
     }
 };
