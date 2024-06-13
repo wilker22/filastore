@@ -15,6 +15,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('store_id');
             $table->string('name');
+           
+            $table->string('description')->nullable();
+            $table->text('body');
+            $table->integer('price');
+            $table->boolean('status');
+            $table->integer('stock');
+            $table->string('slug');
+            
             $table->timestamps();
         });
     }

@@ -7,8 +7,10 @@ use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Filament\Facades\Filament;
 use Filament\Forms;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -39,6 +41,13 @@ class ProductResource extends Resource
                                 Filament::getTenant()->id
                                 )
                         ),
+
+                        TextInput::make('description'),
+                        RichEditor::make('body')->required(),
+                        TextInput::make('price')->required(),
+                        Toggle::make('status')->required(),
+                        TextInput::make('stock')->required(),
+                        TextInput::make('slug')->required(),
             ]);
     }
 
@@ -49,7 +58,9 @@ class ProductResource extends Resource
                 TextColumn::make('id'),
                 TextColumn::make('name')
                         ->searchable()
-                        ->label('Produto')
+                        ->label('Produto'),
+                        Tables\Columns\TextColumn::make('price')->money('BRL'),
+                        Tables\Columns\TextColumn::make('created_at')->date('d/m/Y H:i:s')
             ])
             ->filters([
                 //
