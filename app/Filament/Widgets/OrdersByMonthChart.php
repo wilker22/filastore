@@ -12,6 +12,7 @@ class OrdersByMonthChart extends ChartWidget
     protected static ?string $heading = 'Vendas / Mês';
 
     protected int | string | array $columnSpan = 'full';
+    protected static ?int $sort = 2;
 
     protected function getData(): array
     {
@@ -22,21 +23,22 @@ class OrdersByMonthChart extends ChartWidget
             )
             ->perMonth()
             ->count();
+            
         return [
             'datasets' => [
                 [
-                    'label' => 'Total de Vends / Mês',
+                    'label' => 'Total de Vendas / Mês',
                     'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                     'backgroundColor' => '#36A2EB',
                     'borderColor' => '#9BD0F5',
                 ],
             ],
-            'labels' => $data->map(fn (TrendValue $value) => $value->date),
+            'labels' =>$data->map(fn (TrendValue $value) => $value->date),
         ];
     }
 
     protected function getType(): string
     {
-        return 'line';
+        return 'bar';
     }
 }
