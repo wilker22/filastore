@@ -88,4 +88,10 @@ class OrderResource extends Resource
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }
+
+
+    public static function getNavigationBadge(): ?string
+    {
+        return self::getModel()::loadWithTenant()->count();
+    }
 }

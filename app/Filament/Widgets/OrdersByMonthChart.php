@@ -11,7 +11,10 @@ class OrdersByMonthChart extends ChartWidget
 {
     protected static ?string $heading = 'Vendas / Mês';
 
+    protected static ?string $pollingInterval = '120s';
+
     protected int | string | array $columnSpan = 'full';
+   
     protected static ?int $sort = 2;
 
     protected function getData(): array
