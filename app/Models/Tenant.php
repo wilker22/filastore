@@ -12,6 +12,7 @@ class Tenant extends Model
     use HasFactory;
     protected $guarded = [];
 
+    //refere-se aos nossos inquilinos
     public function members() : BelongsToMany
     {
         return $this->belongsToMany(User::class);
@@ -30,5 +31,11 @@ class Tenant extends Model
     public function categories() : HasMany
     {
         return $this->hasMany(category::class);
+    }
+
+    //refere-se aos usuarios dos nossos inquilinos
+    public function users() : HasMany
+    {
+        return $this->hasMany(User::class);
     }
 }

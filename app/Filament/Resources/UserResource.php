@@ -7,12 +7,16 @@ use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Facades\Filament;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Password;
 
 class UserResource extends Resource
 {
@@ -30,7 +34,18 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('name')->required(),
+                TextInput::make('email')->email()->required(),
+                // TextInput::make('password')
+                //     ->password()
+                    
+                //     ->rule(Password::default()),
+                // TextInput::make('password_confirmation')
+                //     ->password()
+                //     ->same('password')
+                //     ->required()
+                //     ->rule(Password::default()),
+                Select::make('role')->relationship('roles', 'name')->multiple()
             ]);
     }
 
@@ -45,6 +60,45 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\Action::make('change_password')
+                    // ->icon('heroicon-m-user')
+                    // ->color('info')
+                    // ->requiresConfirmation()
+
+                    ->form([
+
+                        TextInput::make('password')
+                            ->password()
+                            ->required()
+                            ->rule(Password::default()),
+
+                        TextInput::make('password_confirmation')
+                            ->password()
+                            ->same('password')
+                            ->required()
+                            ->rule(Password::default()),
+                    ])
+                    ->action(function (User $record, array $data) {
+                        $record->update([
+                            'password' => bcrypt($data['password'])
+                        ]);
+
+                        Notification::make()
+                            ->title('Senha atualizada!')
+                            ->success()
+                            ->send();
+                    })
+                // ->steps([
+                //     Forms\Components\Wizard\Step::make('Passo 1')->schema([
+                //             TextInput::make('name')->required(),
+                //     ]),
+                //     Forms\Components\Wizard\Step::make('Passo 2')->schema([
+                //         TextInput::make('email')->required(),
+
+
+                // ])
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -64,7 +118,7 @@ class UserResource extends Resource
     {
         return [
             'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
+            //'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
