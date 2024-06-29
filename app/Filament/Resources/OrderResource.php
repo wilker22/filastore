@@ -20,9 +20,15 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
+    protected static ?string $pluralModelLabel = 'Pedidos';
+
+    protected static ?string $modelLabel = 'Pedido';
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Admin';
+
+  //  
 
     protected static ?string $navigationLabel = 'Pedidos';
 

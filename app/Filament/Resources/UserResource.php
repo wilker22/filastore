@@ -14,19 +14,25 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\Rules\Password as RulesPassword;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
+    protected static ?string $modelLabel = 'Cliente';
+  
+    protected static ?string $pluralModelLabel = 'Clientes';
+  
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Admin';
 
-    protected static ?string $navigationLabel = 'Usuários';
+    protected static ?string $navigationLabel = 'Clientes';
 
     protected static ?int $navigationSort = 1;
 
@@ -53,7 +59,17 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('id')->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                                ->sortable()
+                                ->searchable()   
+                                ->label('Loja'),
+
+                Tables\Columns\TextColumn::make('created_at')
+                                                ->sortable()
+                                                ->date('d/m/Y H:i')
+                                                ->label('Data Cadastro'),
+
             ])
             ->filters([
                 //
@@ -71,13 +87,13 @@ class UserResource extends Resource
                         TextInput::make('password')
                             ->password()
                             ->required()
-                            ->rule(Password::default()),
+                            ->rule(RulesPassword::default()),
 
                         TextInput::make('password_confirmation')
                             ->password()
                             ->same('password')
                             ->required()
-                            ->rule(Password::default()),
+                            ->rule(RulesPassword::default()),
                     ])
                     ->action(function (User $record, array $data) {
                         $record->update([
