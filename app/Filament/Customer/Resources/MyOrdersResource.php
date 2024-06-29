@@ -18,9 +18,15 @@ class MyOrdersResource extends Resource
 {
     protected static ?string $model = Order::class;
 
+    
+    protected static ?string $pluralModelLabel = 'Meus Pedidos';
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $myOrders = "Meus Pedidos";
+
+    protected static ?string $navigationLabel = 'Meus Pedidos';
+
 
     public static function form(Form $form): Form
     {
@@ -41,7 +47,7 @@ class MyOrdersResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+               // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([

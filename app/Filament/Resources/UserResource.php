@@ -14,10 +14,10 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Auth\Passwords\PasswordBroker;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Contracts\Auth\PasswordBroker as AuthPasswordBroker;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Password;
+
 use Illuminate\Validation\Rules\Password as RulesPassword;
 
 class UserResource extends Resource
@@ -42,15 +42,15 @@ class UserResource extends Resource
             ->schema([
                 TextInput::make('name')->required(),
                 TextInput::make('email')->email()->required(),
-                // TextInput::make('password')
-                //     ->password()
+                TextInput::make('password')
+                    ->password()
                     
-                //     ->rule(Password::default()),
-                // TextInput::make('password_confirmation')
-                //     ->password()
-                //     ->same('password')
-                //     ->required()
-                //     ->rule(Password::default()),
+                    ->rule(Password::default()),
+                TextInput::make('password_confirmation')
+                    ->password()
+                    ->same('password')
+                    ->required()
+                    ->rule(Password::default()),
                 Select::make('role')->relationship('roles', 'name')->multiple()
             ]);
     }
@@ -134,8 +134,8 @@ class UserResource extends Resource
     {
         return [
             'index' => Pages\ListUsers::route('/'),
-            //'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'create' => Pages\CreateUser::route('/create'),
+           // 'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
 
