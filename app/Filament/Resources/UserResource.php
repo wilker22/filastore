@@ -3,11 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Facades\Filament;
 use Filament\Forms;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -15,8 +13,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Validation\Rules\Password;
-use Illuminate\Contracts\Auth\PasswordBroker as AuthPasswordBroker;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 use Illuminate\Validation\Rules\Password as RulesPassword;
 
@@ -42,16 +38,16 @@ class UserResource extends Resource
             ->schema([
                 TextInput::make('name')->required(),
                 TextInput::make('email')->email()->required(),
-                TextInput::make('password')
-                    ->password()
-                    
-                    ->rule(Password::default()),
-                TextInput::make('password_confirmation')
-                    ->password()
-                    ->same('password')
-                    ->required()
-                    ->rule(Password::default()),
-                Select::make('role')->relationship('roles', 'name')->multiple()
+                // TextInput::make('password')
+                //     ->password()
+                //     ->rule(Password::default()),
+                // TextInput::make('password_confirmation')
+                //     ->password()
+                //     ->same('password')
+                //     ->rule(Password::default()),
+                Forms\Components\Select::make('role')
+                            ->relationship('roles', 'name')
+                            ->multiple(),
             ]);
     }
 
@@ -135,7 +131,7 @@ class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
-           // 'edit' => Pages\EditUser::route('/{record}/edit'),
+            'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
 

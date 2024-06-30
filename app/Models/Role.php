@@ -5,9 +5,9 @@ namespace App\Models;
 use App\Traits\BelongsToTenantTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Permission\Models\Role as ModelsRole;
+use Spatie\Permission\Models\Role as SpatieRole;
 
-class Role extends ModelsRole
+class Role extends SpatieRole
 {
     use HasFactory, BelongsToTenantTrait;
 }
