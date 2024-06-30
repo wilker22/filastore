@@ -18,7 +18,7 @@ class Order extends Model
 
     public function orderTotal(): Attribute
     {
-        return new Attribute(fn ($attr) => $this->items->sum('order_value') / 100);
+        return new Attribute(fn ($attr) => $this->items->sum('order_value'));
     }
 
     public function items() : HasMany
