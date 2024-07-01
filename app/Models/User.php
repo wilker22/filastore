@@ -69,6 +69,7 @@ class User extends Authenticatable implements FilamentUser, HasTenants
      */
     public function canAccessPanel(Panel $panel): bool
     {
+        if($panel->isDefault()) return !$this->hasRole('customer');
         return true;
     }
 
