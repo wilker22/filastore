@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Billing\SubscriptionBillingProvider;
 use App\Filament\Pages\Tenancy\RegisterTenant;
 use App\Models\Tenant;
 use Filament\Http\Middleware\Authenticate;
@@ -62,6 +63,8 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
             ])
+            ->requiresTenantSubscription()
+            ->tenantBillingProvider(new SubscriptionBillingProvider())
             ->spa();
     }
 }
